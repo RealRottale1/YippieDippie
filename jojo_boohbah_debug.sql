@@ -34,8 +34,8 @@ WHERE energy_level > (SELECT AVG(energy_level)
 -- 6
 SELECT name
 FROM boohbah
-WHERE energy_level > ANY (
-    SELECT power
+WHERE energy_level > (
+    SELECT MAX(power)
     FROM jojo_stand
     WHERE season = 3
 );
@@ -65,12 +65,7 @@ WHERE (boohbah_id, stand_id) IN
 
 -- 10
 MERGE INTO boohbah b
-USING (
-    SELECT stand_id
-    FROM jojo_stand
-) s
-ON (b.boohbah_id = s.stand_id)
+USING boohbah_stand_link l
+ON (b.boohbah_id = l.boohbah_id)
 WHEN MATCHED THEN
-  UPDATE SET b.energy_level = 999;
-
-
+    UPDATE SET b.energy_level = b.energy_level + 10;
